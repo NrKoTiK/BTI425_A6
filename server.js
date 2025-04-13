@@ -11,10 +11,6 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const HTTP_PORT = process.env.PORT || 8080;
 
-app.use(express.json());
-app.use(cors());
-
-// JSON Web Token Setup
 let ExtractJwt = passportJWT.ExtractJwt;
 let JwtStrategy = passportJWT.Strategy;
 
@@ -38,19 +34,13 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
   }
 });
 
-// tell passport to use our "strategy"
+app.use(express.json());
+app.use(cors());
+
 passport.use(strategy);
 
 // add passport as application-level middleware
 app.use(passport.initialize());
-
-let payload = {
-    _id: user._id,
-    userName: user.userName
-  };
-  
-let token = jwt.sign(payload, jwtOptions.secretOrKey);
-
 
 app.post("/api/user/register", (req, res) => {
     userService.registerUser(req.body)
